@@ -1,667 +1,854 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>20 simple steps to debug anything</title><style>
-/* webkit printing magic: print all background colors */
-html {
-	-webkit-print-color-adjust: exact;
-}
-* {
-	box-sizing: border-box;
-	-webkit-print-color-adjust: exact;
-}
-
-html,
-body {
-	margin: 0;
-	padding: 0;
-}
-@media only screen {
-	body {
-		margin: 2em auto;
-		max-width: 900px;
-		color: rgb(55, 53, 47);
-	}
-}
-
-body {
-	line-height: 1.5;
-	white-space: pre-wrap;
-}
-
-a,
-a.visited {
-	color: inherit;
-	text-decoration: underline;
-}
-
-.pdf-relative-link-path {
-	font-size: 80%;
-	color: #444;
-}
-
-h1,
-h2,
-h3 {
-	letter-spacing: -0.01em;
-	line-height: 1.2;
-	font-weight: 600;
-	margin-bottom: 0;
-}
-
-.page-title {
-	font-size: 2.5rem;
-	font-weight: 700;
-	margin-top: 0;
-	margin-bottom: 0.75em;
-}
-
-h1 {
-	font-size: 1.875rem;
-	margin-top: 1.875rem;
-}
-
-h2 {
-	font-size: 1.5rem;
-	margin-top: 1.5rem;
-}
-
-h3 {
-	font-size: 1.25rem;
-	margin-top: 1.25rem;
-}
-
-.source {
-	border: 1px solid #ddd;
-	border-radius: 3px;
-	padding: 1.5em;
-	word-break: break-all;
-}
-
-.callout {
-	border-radius: 3px;
-	padding: 1rem;
-}
-
-figure {
-	margin: 1.25em 0;
-	page-break-inside: avoid;
-}
-
-figcaption {
-	opacity: 0.5;
-	font-size: 85%;
-	margin-top: 0.5em;
-}
-
-mark {
-	background-color: transparent;
-}
-
-.indented {
-	padding-left: 1.5em;
-}
-
-hr {
-	background: transparent;
-	display: block;
-	width: 100%;
-	height: 1px;
-	visibility: visible;
-	border: none;
-	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
-}
-
-img {
-	max-width: 100%;
-}
-
-@media only print {
-	img {
-		max-height: 100vh;
-		object-fit: contain;
-	}
-}
-
-@page {
-	margin: 1in;
-}
-
-.collection-content {
-	font-size: 0.875rem;
-}
-
-.column-list {
-	display: flex;
-	justify-content: space-between;
-}
-
-.column {
-	padding: 0 1em;
-}
-
-.column:first-child {
-	padding-left: 0;
-}
-
-.column:last-child {
-	padding-right: 0;
-}
-
-.table_of_contents-item {
-	display: block;
-	font-size: 0.875rem;
-	line-height: 1.3;
-	padding: 0.125rem;
-}
-
-.table_of_contents-indent-1 {
-	margin-left: 1.5rem;
-}
-
-.table_of_contents-indent-2 {
-	margin-left: 3rem;
-}
-
-.table_of_contents-indent-3 {
-	margin-left: 4.5rem;
-}
-
-.table_of_contents-link {
-	text-decoration: none;
-	opacity: 0.7;
-	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
-}
-
-table,
-th,
-td {
-	border: 1px solid rgba(55, 53, 47, 0.09);
-	border-collapse: collapse;
-}
-
-table {
-	border-left: none;
-	border-right: none;
-}
-
-th,
-td {
-	font-weight: normal;
-	padding: 0.25em 0.5em;
-	line-height: 1.5;
-	min-height: 1.5em;
-	text-align: left;
-}
-
-th {
-	color: rgba(55, 53, 47, 0.6);
-}
-
-ol,
-ul {
-	margin: 0;
-	margin-block-start: 0.6em;
-	margin-block-end: 0.6em;
-}
-
-li > ol:first-child,
-li > ul:first-child {
-	margin-block-start: 0.6em;
-}
-
-ul > li {
-	list-style: disc;
-}
-
-ul.to-do-list {
-	text-indent: -1.7em;
-}
-
-ul.to-do-list > li {
-	list-style: none;
-}
-
-.to-do-children-checked {
-	text-decoration: line-through;
-	opacity: 0.375;
-}
-
-ul.toggle > li {
-	list-style: none;
-}
-
-ul {
-	padding-inline-start: 1.7em;
-}
-
-ul > li {
-	padding-left: 0.1em;
-}
-
-ol {
-	padding-inline-start: 1.6em;
-}
-
-ol > li {
-	padding-left: 0.2em;
-}
-
-.mono ol {
-	padding-inline-start: 2em;
-}
-
-.mono ol > li {
-	text-indent: -0.4em;
-}
-
-.toggle {
-	padding-inline-start: 0em;
-	list-style-type: none;
-}
-
-/* Indent toggle children */
-.toggle > li > details {
-	padding-left: 1.7em;
-}
-
-.toggle > li > details > summary {
-	margin-left: -1.1em;
-}
-
-.selected-value {
-	display: inline-block;
-	padding: 0 0.5em;
-	background: rgba(206, 205, 202, 0.5);
-	border-radius: 3px;
-	margin-right: 0.5em;
-	margin-top: 0.3em;
-	margin-bottom: 0.3em;
-	white-space: nowrap;
-}
-
-.collection-title {
-	display: inline-block;
-	margin-right: 1em;
-}
-
-time {
-	opacity: 0.5;
-}
-
-.icon {
-	display: inline-block;
-	max-width: 1.2em;
-	max-height: 1.2em;
-	text-decoration: none;
-	vertical-align: text-bottom;
-	margin-right: 0.5em;
-}
-
-img.icon {
-	border-radius: 3px;
-}
-
-.user-icon {
-	width: 1.5em;
-	height: 1.5em;
-	border-radius: 100%;
-	margin-right: 0.5rem;
-}
-
-.user-icon-inner {
-	font-size: 0.8em;
-}
-
-.text-icon {
-	border: 1px solid #000;
-	text-align: center;
-}
-
-.page-cover-image {
-	display: block;
-	object-fit: cover;
-	width: 100%;
-	height: 30vh;
-}
-
-.page-header-icon {
-	font-size: 3rem;
-	margin-bottom: 1rem;
-}
-
-.page-header-icon-with-cover {
-	margin-top: -0.72em;
-	margin-left: 0.07em;
-}
-
-.page-header-icon img {
-	border-radius: 3px;
-}
-
-.link-to-page {
-	margin: 1em 0;
-	padding: 0;
-	border: none;
-	font-weight: 500;
-}
-
-p > .user {
-	opacity: 0.5;
-}
-
-td > .user,
-td > time {
-	white-space: nowrap;
-}
-
-input[type="checkbox"] {
-	transform: scale(1.5);
-	margin-right: 0.6em;
-	vertical-align: middle;
-}
-
-p {
-	margin-top: 0.5em;
-	margin-bottom: 0.5em;
-}
-
-.image {
-	border: none;
-	margin: 1.5em 0;
-	padding: 0;
-	border-radius: 0;
-	text-align: center;
-}
-
-.code,
-code {
-	background: rgba(135, 131, 120, 0.15);
-	border-radius: 3px;
-	padding: 0.2em 0.4em;
-	border-radius: 3px;
-	font-size: 85%;
-	tab-size: 2;
-}
-
-code {
-	color: #eb5757;
-}
-
-.code {
-	padding: 1.5em 1em;
-}
-
-.code-wrap {
-	white-space: pre-wrap;
-	word-break: break-all;
-}
-
-.code > code {
-	background: none;
-	padding: 0;
-	font-size: 100%;
-	color: inherit;
-}
-
-blockquote {
-	font-size: 1.25em;
-	margin: 1em 0;
-	padding-left: 1em;
-	border-left: 3px solid rgb(55, 53, 47);
-}
-
-.bookmark {
-	text-decoration: none;
-	max-height: 8em;
-	padding: 0;
-	display: flex;
-	width: 100%;
-	align-items: stretch;
-}
-
-.bookmark-title {
-	font-size: 0.85em;
-	overflow: hidden;
-	text-overflow: ellipsis;
-	height: 1.75em;
-	white-space: nowrap;
-}
-
-.bookmark-text {
-	display: flex;
-	flex-direction: column;
-}
-
-.bookmark-info {
-	flex: 4 1 180px;
-	padding: 12px 14px 14px;
-	display: flex;
-	flex-direction: column;
-	justify-content: space-between;
-}
-
-.bookmark-image {
-	width: 33%;
-	flex: 1 1 180px;
-	display: block;
-	position: relative;
-	object-fit: cover;
-	border-radius: 1px;
-}
-
-.bookmark-description {
-	color: rgba(55, 53, 47, 0.6);
-	font-size: 0.75em;
-	overflow: hidden;
-	max-height: 4.5em;
-	word-break: break-word;
-}
-
-.bookmark-href {
-	font-size: 0.75em;
-	margin-top: 0.25em;
-}
-
-.sans { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
-.code { font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace; }
-.serif { font-family: Lyon-Text, Georgia, YuMincho, "Yu Mincho", "Hiragino Mincho ProN", "Hiragino Mincho Pro", "Songti TC", "Songti SC", "SimSun", "Nanum Myeongjo", NanumMyeongjo, Batang, serif; }
-.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
-.pdf .sans { font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC', 'Noto Sans CJK KR'; }
-
-.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC', 'Noto Sans Mono CJK KR'; }
-
-.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, YuMincho, "Yu Mincho", "Hiragino Mincho ProN", "Hiragino Mincho Pro", "Songti TC", "Songti SC", "SimSun", "Nanum Myeongjo", NanumMyeongjo, Batang, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC', 'Noto Sans CJK KR'; }
-
-.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC', 'Noto Sans Mono CJK KR'; }
-
-.highlight-default {
-}
-.highlight-gray {
-	color: rgb(155,154,151);
-}
-.highlight-brown {
-	color: rgb(100,71,58);
-}
-.highlight-orange {
-	color: rgb(217,115,13);
-}
-.highlight-yellow {
-	color: rgb(223,171,1);
-}
-.highlight-teal {
-	color: rgb(15,123,108);
-}
-.highlight-blue {
-	color: rgb(11,110,153);
-}
-.highlight-purple {
-	color: rgb(105,64,165);
-}
-.highlight-pink {
-	color: rgb(173,26,114);
-}
-.highlight-red {
-	color: rgb(224,62,62);
-}
-.highlight-gray_background {
-	background: rgb(235,236,237);
-}
-.highlight-brown_background {
-	background: rgb(233,229,227);
-}
-.highlight-orange_background {
-	background: rgb(250,235,221);
-}
-.highlight-yellow_background {
-	background: rgb(251,243,219);
-}
-.highlight-teal_background {
-	background: rgb(221,237,234);
-}
-.highlight-blue_background {
-	background: rgb(221,235,241);
-}
-.highlight-purple_background {
-	background: rgb(234,228,242);
-}
-.highlight-pink_background {
-	background: rgb(244,223,235);
-}
-.highlight-red_background {
-	background: rgb(251,228,228);
-}
-.block-color-default {
-	color: inherit;
-	fill: inherit;
-}
-.block-color-gray {
-	color: rgba(55, 53, 47, 0.6);
-	fill: rgba(55, 53, 47, 0.6);
-}
-.block-color-brown {
-	color: rgb(100,71,58);
-	fill: rgb(100,71,58);
-}
-.block-color-orange {
-	color: rgb(217,115,13);
-	fill: rgb(217,115,13);
-}
-.block-color-yellow {
-	color: rgb(223,171,1);
-	fill: rgb(223,171,1);
-}
-.block-color-teal {
-	color: rgb(15,123,108);
-	fill: rgb(15,123,108);
-}
-.block-color-blue {
-	color: rgb(11,110,153);
-	fill: rgb(11,110,153);
-}
-.block-color-purple {
-	color: rgb(105,64,165);
-	fill: rgb(105,64,165);
-}
-.block-color-pink {
-	color: rgb(173,26,114);
-	fill: rgb(173,26,114);
-}
-.block-color-red {
-	color: rgb(224,62,62);
-	fill: rgb(224,62,62);
-}
-.block-color-gray_background {
-	background: rgb(235,236,237);
-}
-.block-color-brown_background {
-	background: rgb(233,229,227);
-}
-.block-color-orange_background {
-	background: rgb(250,235,221);
-}
-.block-color-yellow_background {
-	background: rgb(251,243,219);
-}
-.block-color-teal_background {
-	background: rgb(221,237,234);
-}
-.block-color-blue_background {
-	background: rgb(221,235,241);
-}
-.block-color-purple_background {
-	background: rgb(234,228,242);
-}
-.block-color-pink_background {
-	background: rgb(244,223,235);
-}
-.block-color-red_background {
-	background: rgb(251,228,228);
-}
-.select-value-color-default { background-color: rgba(206,205,202,0.5); }
-.select-value-color-gray { background-color: rgba(155,154,151, 0.4); }
-.select-value-color-brown { background-color: rgba(140,46,0,0.2); }
-.select-value-color-orange { background-color: rgba(245,93,0,0.2); }
-.select-value-color-yellow { background-color: rgba(233,168,0,0.2); }
-.select-value-color-green { background-color: rgba(0,135,107,0.2); }
-.select-value-color-blue { background-color: rgba(0,120,223,0.2); }
-.select-value-color-purple { background-color: rgba(103,36,222,0.2); }
-.select-value-color-pink { background-color: rgba(221,0,129,0.2); }
-.select-value-color-red { background-color: rgba(255,0,26,0.2); }
-
-.checkbox {
-	display: inline-flex;
-	vertical-align: text-bottom;
-	width: 16;
-	height: 16;
-	background-size: 16px;
-	margin-left: 2px;
-	margin-right: 5px;
-}
-
-.checkbox-on {
-	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
-}
-
-.checkbox-off {
-	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
-}
-	
-</style></head><body><article id="d962a4dc-0da3-4592-b8e1-148cfd80610e" class="page serif"><header><h1 class="page-title">20 simple steps to debug anything</h1></header><div class="page-body"><p id="e7ef9bf5-af11-4180-b465-b8491477644d" class="">‌</p><p id="c846c34f-4971-400b-bc91-717d3324549b" class="">Debugging is an everyday task. Your webpack build failed locally? Debug it. Your CI failed? Debug it. You wrote some code and broke everything? Debug it. Bob from the marketing team called you because you MUST fix a bug into production right now? Debug it.</p><p id="51ebcf80-4a10-4cc8-9f7a-f6dee733dc60" class="">‌</p><p id="04120847-c9ba-4745-b541-7d0f6de78537" class="">You want to learn how to debug? Be our guest.</p><h2 id="13293881-4cbb-4e79-86cc-d64d21bf8392" class=""><strong>1. Don&#x27;t panic</strong></h2><p id="5fb6ac11-8317-460b-8d83-8cb2de6708aa" class="">
-Keep a cool head, it makes the hard bugs simple and the impossible ones possible. So, if you struggle, remove your hand from the keyboard. Take a breath, get a glass of water. And go back to your seat.
-</p><h2 id="debf72be-dc45-4cbd-83f9-f7c9937ae573" class=""><strong>2. SERIOUSLY, do NOT panic</strong></h2><p id="a07f8239-e64c-4a7a-9c0e-8af97725f6ae" class="">
-Even if you have to debug your production server. Stress causes mistakes, mistakes cause more bugs, more bugs cause more stress.</p><p id="a168db87-41ac-41af-b692-c7c6e9d1fd7d" class="">As you will see later, debugging is a scientific process, so it is necessary to keep your head cool.</p><p id="7b4a7e9d-31b8-4c51-add0-3300e0c52fc1" class="">By the way... If your production is down, it&#x27;s time to roll back!
-</p><h2 id="79161c62-11b0-4910-8d32-331ce18cfab2" class=""><strong>‌3. </strong><strong>Verify the bug is not actually a feature</strong></h2><p id="2e35a160-fbf3-4a59-be6e-abd074d3eb22" class="">
-As features and edge cases grow it becomes impossible for one developer to keep all this complexity in their head. You should spend the time to check the defect you are seeing is outside the expectations of the application.
-</p><h2 id="3bd54a69-7eef-42fd-b5aa-2ca26fe4e0eb" class=""><strong>4. Reproduce the error where it occurred</strong></h2><p id="cae0604b-0cc5-49ab-bf26-17197797b978" class="">
-Don’t wait for the failure to reproduce by itself. Make it fail again as it was reported. If it was in production, don’t start by reproducing the failure locally: do it in production (unless it involves dropping your database). Don&#x27;t focus on making your staging data look like the production environment, you&#x27;ll waste time and be misled by the wrong bugs.</p><p id="25934a85-b1e2-4e74-9a72-83a739dad036" class="">Bugs are scarcely random. Try as hard as possible to find a set of initial conditions and/or actions which lead to a deterministic way to reproduce the failure. It helps.
-</p><h2 id="bba64606-b117-406f-8084-435b5d545c16" class=""><strong>5. Use the </strong><strong>logs, Luke</strong></h2><p id="94b6e3f5-252f-491a-b24b-3a53d0a76d21" class="">
-If there is information about your bug, it’s in the logs. So, find the logs, and use them. “Where are they?” you may ask. Look at the docs or the config of your failing system and you’ll know.</p><p id="1c64b92d-d63c-4175-aa0f-cb556578202b" class="">Then, reproduce the error to see the logs in real time.</p><p id="21594f28-5444-454c-89a4-38d06b160a5a" class="">You must mentally bind the action producing the failure to a system reaction. Otherwise, you could be biased and take an error log for something unrelated to your problem.</p><p id="51540e0e-55cc-4fdc-b331-5b284a7aa046" class="">No logs? Go to step 10.
-</p><h2 id="d9b82e7b-af3c-49d9-8164-d69481c03194" class=""><strong>6. Read the error message, from left to right, from top to bottom</strong></h2><p id="e99c0e75-8d84-4092-b7b6-32a53064d65c" class="">
-An error is text. Read it like text. Don&#x27;t try to wild guess the cause by jumping right to the end of the stack trace. Being calm helps take the time to acknowledge the whole error message.
-</p><h2 id="83f64a9d-80fb-42d0-832b-f9eb3e4f5b8f" class=""><strong>7. Read the error, again</strong></h2><p id="cd2f1e60-5421-4dc5-8c20-712c375b1e97" class="">
-The first time, you decipher. The second time, you understand.
-</p><h2 id="cd184f44-0999-44e7-88a2-6d5e80758a2c" class=""><strong>8. Solve the bug</strong></h2><p id="7693142b-f93a-4dd9-b614-d3b6127a6ff5" class="">
-In most of the cases, the error message is crystal clear. And maybe the cause is trivial. Hence, interrogate the usual suspects: seek typos, verify you are not debugging the wrong server or the wrong git branch, ensure your libraries are up to date, clear your application cache, check your keyboard is actually plugged in your computer... And look at the last thing you changed before the failure (now you know why your teammates blame you when you push a 43874 line changes Pull Request).</p><p id="2933ce96-f79e-4254-94b4-7774ebb660bf" class="">You made a mistake. It happens. Fix it. And go to step 19. If it is actually a difficult bug, keep hope and go to the next step.
-</p><h2 id="89d2eaad-8a9a-4a5c-8cd7-711845165b89" class=""><strong>9. Search the error message online</strong></h2><p id="f18d70a5-7446-423d-97fb-a8c983cb3bc7" class="">
-Remember: you are not alone (unless you are coding in a weird language). Use your favorite search engine and search for your error. You might find a StackOverflow thread or a GitHub issue helping you to solve the bug you are facing. No results? Ask your team if someone has already encountered this bug.</p><p id="808dc81a-495a-4c1a-95cd-498a7ae6d984" class="">Otherwise, move forward to the next step.
-</p><h2 id="14958cc7-b606-43d7-9452-5f380b6da736" class=""><strong>10. Setup a clean debugging workspace</strong></h2><p id="0e21de0d-a0e5-4e94-b7a7-951290dabc75" class="">
-You have eliminated the obvious causes, and the bug is not fixed yet? Brace yourselves, debugging is coming!</p><ul id="8f5b2ca5-264d-4fc6-85c6-313f591fc780" class="bulleted-list"><li>Warn your team, you may spend some time on this and they should know. You also want them to keep you updated regarding your bug in case they encounter it in the wild.</li></ul><ul id="6cbf92a2-5b58-420c-a502-241c56d1016c" class="bulleted-list"><li>Home sweet home, try to reproduce the bug on your local environment where it is the most comfortable place to debug. Setup your favorite debugger if it is not already done.</li></ul><ul id="e8265879-3974-47de-8058-8404efa00301" class="bulleted-list"><li>Even better, find the <em>smallest</em> set of actions/data that make your system fail deterministically and automate it to have the feedback loop as short as possible.</li></ul><ul id="4d7850f6-5577-492c-9cbc-65a038246bad" class="bulleted-list"><li>Fix the bugs you are aware of, they can mask what is really happening or even be sidekicks of your main bug.</li></ul><ul id="b5d3737d-cdac-4105-a1bf-361207b96586" class="bulleted-list"><li>Finally, prepare a place to log your debugging expedition. You&#x27;ll see later why it&#x27;s useful.
-</li></ul><h2 id="591f8c69-2831-4916-a085-eebc866392fd" class=""><strong>11. Setup a clean debugging mindset
-</strong></h2><p id="17b2cb25-259d-4e76-bb31-72566384e50b" class="">You reduced the noise in your tools, now you need to reduce it in your brain. Remember it is more a cognitive process rather than a technical one.</p><p id="a5e991c5-b250-4140-ab2e-2269b865422d" class="">Doubt more than Descartes, especially your own assumptions. It’s rarely because of a Linux Kernel bug, face it. Remove your beliefs, you know the issue is not really random, you just don’t know when it is triggered. Unless you can prove it is true, replace your “<em>cannot</em>” with “<em>shouldn’t</em>”.
-</p><h2 id="60a9e59b-a41c-4a56-a79c-8d0abfa6e91f" class=""><strong>12. Create a model of your system
-</strong></h2><p id="c16e0914-44d6-4e0f-b8e3-d35e626f62ee" class="">You have the tool, you have the mind, now you need the map.</p><p id="19ac4163-0196-4d7b-bc6b-68fdf9da7fe7" class="">Make a diagram of how your system is supposed to work, from one end to another, from your end user to the place where data is stored. Here you should see your frontend, your backend, the server and the cache systems between them, the data stores, every cog that is part of your machine. Display the way these parts communicate with one another. Be exhaustive, but not too precise. “All models are wrong, but some are useful” to quote George Box.</p><p id="766e0310-e890-4a96-b20a-e214b43f5f47" class="">If you don’t have the knowledge to make that diagram, don’t go any further until you are able to do so, it is mandatory for your everyday job. Would you trust a mechanic to repair your car if they don’t know how the engine’s power is transmitted to the wheels?
-</p><h2 id="51569708-e1cd-4a9c-b155-9ce17e7a5720" class=""><strong>13. Make educated guesses
-</strong></h2><p id="a8395a78-cc0f-4054-9fe3-2b20cadd6dfb" class="">Now you have a diagram of your system behaving correctly. You already know how to reproduce your bug, hopefully with an error message indicating what is wrong with your system.</p><p id="31a49ad7-35fa-450a-ae0c-b6c5bfb51efd" class="">By putting together your model, the facts and your experience, you should be able to formulate the most likely causes about what is going wrong. Jot them down your notes.</p><p id="ca0adbcf-20fa-42b0-8329-8b6110ad126a" class="">If you only have weird patterns and coincidences instead of a deterministic way to reproduce your bug in step 4, don’t be carried away by them. For instance, an error happening only at certain periods of time can be linked to the ongoing traffic on your server or a cron.
-</p><h2 id="4d0da68c-d3f7-4a7e-af8b-667ac151997e" class=""><strong>14. Run and devise an experiment
-</strong></h2><p id="cc14d7e7-e1e2-4391-a1cd-c94abbfc03cd" class="">Here, we want to confirm or refute our previous hypotheses, as fast as possible. Yes, this is the step where we have to talk about dichotomy.</p><p id="c668de79-140c-4c0d-b51f-b816aeefb87a" class="">Choose one of your hypotheses and start from there. If you think the issue comes from the call to your DB, don’t bother looking into your frontend code. Put a debugger breakpoint straight at the suspicious SQL query building.</p><p id="e1db9923-7e5e-4a71-9d3c-4c926c007ab4" class="">You think the bug is in the code? Don’t read all the code. Checkout another branch and see if it still fails. The bug is merged on master for a while and you don’t know where to look? Learn how to use <a href="https://git-scm.com/docs/git-bisect">git-bisect</a>, now. Then, find the faulty commit in no time and reduce the number of lines of code to explore.</p><p id="99b1e5cf-bc94-4e6c-bb0b-0e96f2ed0520" class="">Verify your hypotheses one after each other (remember humans are not well wired for parallel computing). Strike out the wrong ones on the list you previously wrote.</p><p id="45bf42d7-07a7-4245-9e07-d15a6f791c20" class="">For each experiment, write down the cause you wanted to assess, what you did, in what order, and what happened as a result. It will ensure you are not doing wild guesses and give you material in case of backtracking or if you ask for help.</p><p id="ddd39b38-60b9-49f2-a1ec-2c14f9d87f14" class="">If you have not found the cause of the bug yet, you are likely closer than you think. You might have hypotheses that you do not know how to test yet. Or you remain stuck in a part of your system and are still looking for a path to reach the bedrock. So, prepare to dive.
-</p><h2 id="622b0907-cee0-4b45-8b26-ea0eafdf0bc5" class=""><strong>15. We need to go deeper</strong><strong>
-</strong></h2><p id="2acc7835-e7b0-4f7d-a699-6daf53dbbcbe" class="">The model built previously was good enough to approach the bug cause but not to touch it. Because you can’t reason about something you don’t perceive, refine the model to sharpen your sight of the problem.</p><p id="4113b268-9bdf-4b1c-bb3e-b60ae7180181" class="">Most of the time the obstacle lies at a system boundary, like a function from a vendor library, an API provided by another team or even two modules inside your own software. So here are some ideas to scout through the fog:</p><ul id="aca243cb-baad-47fe-a242-735033242748" class="bulleted-list"><li><strong>Read the manual.</strong> Even if it looks big, the manual contains knowledge about how to use your vendor. Sometimes, you have to stop looking at your code to find the truth. And when the docs is really good, it provides you the small details that are actually very important for your issue. <em>Disclaimer: read manuals the same way you read your error logs</em>. ;-]</li></ul><ul id="1748d1ae-1743-4d9d-9694-744795a274b7" class="bulleted-list"><li><strong>Read your libraries source code.</strong> Don’t be afraid even if it is not <em>your code</em>, it’s still code. You are able to read it. Understand it might take more time because libraries have their own internal idioms. It will lead you closer to the bug cause. And make you a better developer.</li></ul><ul id="54d7d2bc-ffef-4c76-bbbc-5d8cb1587e30" class="bulleted-list"><li><strong>Look at the signal.</strong> If the problem happens between two nodes, the information you need to observe is on the wire. Learn how to read a <a href="https://www.tcpdump.org/manpages/tcpdump.1.html">tcpdump</a>/<a href="https://www.wireshark.org/">wireshark</a> trace. Follow your data with a debugger. Look at what your garbage collector keeps in the heap to understand a memory leak. Unravel your hanging process thanks to <a href="https://strace.io/">strace</a>. And don’t trust your understanding of the ORM you use, read the generated SQL query and execute it by yourself.</li></ul><ul id="de342318-f969-49a5-8e8f-71a4ccc0d755" class="bulleted-list"><li><strong>Know your concurrency fundamentals.</strong> Deadlocks, live locks, shared memory, race conditions… Those are the worst and unless your software runtime includes a race detector, you need to use 100% of your brain to get rid of concurrency bugs. They  deserve their own article.</li></ul><p id="8c062041-dd89-4f8c-9797-5d6397415aff" class="">In any case, search for depth. Don’t go halfway to learn something new or your intuition will add more fog. Educated guesses are for mastered topics.</p><p id="6b4dedba-67ac-4637-bb51-16e53a15e0d7" class="">If you are not able to delve anymore, don’t get lost in limbo. Tag a partner!
-</p><h2 id="9fa426a8-a9d5-4571-abd5-055a69e7c4f2" class=""><strong>16. Ask for help</strong></h2><p id="b8371087-a018-4cbe-9f24-c9049a5ad54e" class="">
-You’ve dug as much as you could and still cannot pinpoint what’s wrong? That can happen, it’s okay, we are fallible beings.</p><p id="c6f47dd3-f9d6-4f7a-b280-1965cc94047b" class="">You may have not seen the smoking gun because you are not lucid anymore. Sometimes all you need is to take a step back, and that can be offered by something as simple as <a href="https://en.wikipedia.org/wiki/Rubber_duck_debugging">a rubber duck</a>.</p><p id="1f66dbe1-3eb9-4868-8e34-8a067f7ad3ca" class="">If the duck doesn’t make the cut, set aside your ego and your shyness to ask for help from a fellow developer. Search first for an expert in the area you are investigating, but any help is welcome here.</p><p id="94c0a9b4-df42-4dc1-b713-42078b57d9e0" class="">Thanks to your debug log, present to them your debugging process. State all the facts, even the weird ones and keep away any results from your inductive reasoning as you do not want to influence them.</p><p id="932db1e5-a48e-4cb3-b330-6544d0613390" class="">If the bug is still there after you’ve consulted every person likely to help in your team or surrounding ones, go online. Post a small portion of your code that can exhibit your problem. Describe how to reproduce your bug and ask politely for help. People like puzzles, are eager to help and will collaborate to find a solution. <a href="https://stackexchange.com/sites">70% of StackOverflow and 78% of ServerFault questions have at least one answer with upvotes</a>.</p><p id="5d4aaad7-7777-4a27-9521-de7dc827b966" class="">You have cast your hook to the water, now wait for the help to bite and give you a fix to try.
-</p><h2 id="6cd80f03-291a-4167-81bd-c7b21aabd82d" class=""><strong>17. Ensure </strong><em><strong>this</strong></em><strong> failure is fixed</strong></h2><p id="ac2d6c83-aba3-474d-b562-bf12f871cf1a" class="">
-Here, we suppose you have found something that made your bug disappear.</p><p id="423c7925-37eb-4802-aace-7a2a81759be8" class="">Software engineering is <em>mostly</em> deterministic: you must have done something. A bug cannot simply vanish in the air. (If it happened don&#x27;t celebrate and go back to step 10 instead.)</p><p id="afe013a6-c2f1-40d9-b5ce-53c34197856b" class="">Assess your fix with the same scientific mindset as before:</p><ul id="675966ef-7b7b-4522-9f6c-c93cd6912d70" class="bulleted-list"><li>Keep only what you think is necessary for your fix to work. </li></ul><ul id="dca0dbc7-2402-4bb4-92a0-ab3a4baa1beb" class="bulleted-list"><li>Use the test from the step 10 to check that the bug is gone with the fix.</li></ul><ul id="f8586f76-1eba-4b37-ba63-665d5cf25112" class="bulleted-list"><li>Remove the fix and use the same test to check that the bug is back.</li></ul><p id="9c3f1ba7-e4ec-48e5-b51a-0f578aaacb6f" class="">If the fix doesn’t pass this test, the two main hypotheses are that:</p><ul id="c7e12e2d-44b8-4dba-aff7-55e4998fd50c" class="bulleted-list"><li>Your fix is incomplete and need other changes made during the process. Something considered unnecessary might be required.</li></ul><ul id="a2f636c7-e4a1-408c-b38c-a246c8c9a351" class="bulleted-list"><li>You had a lapse in concentration, your fix never really worked.</li></ul><p id="622c5f6d-bbf8-4f8a-8674-3e6c01c2dee7" class="">In both cases, use this new data to refine your understanding of the problem and go back to step 13. Stay strong, you’re closing in!</p><p id="58c22aa3-0d41-496a-9c38-255c5ed9775d" class="">If the fix passes the previous test, good job, the bug is dead!
-</p><h2 id="2c0cc70d-77d9-4c01-8109-aa5fa3b0677b" class=""><strong>18. Make it easier next time</strong></h2><p id="1591f033-6bc7-4155-9a2d-eff264120fa9" class="">
-<em>This</em> bug is dead. But:</p><ol id="9f21fa6d-df6c-47e2-a3aa-e8a84e79e161" class="numbered-list" start="1"><li>It could have been a trivial bug solved at step 8.</li></ol><ol id="8fd6b661-827a-43d2-bbe2-1730613181e9" class="numbered-list" start="2"><li>Bugs have friends.</li></ol><p id="326f4810-3ba0-4464-b36e-54984ef19341" class="">Face it, software engineers spend more time understanding why things do not work as intended than coding features. If you reduce the time to debug issues, you will coincidentally increase the time where you are creating value instead of repairing it.</p><p id="e144d408-cb05-48f7-9545-825d62560a4c" class="">Keep all the things you added into the codebase you wish you had at the beginning of your bug quest: log messages at debug levels with input/output values, HTTP status code respecting the RFC semantics, an actual crash in a previously silent catch block...</p><p id="bda3ce6b-3c76-46b6-8640-3244ec856c35" class="">The same goes for tool created to investigate your problem, don’t discard it. Document why it’s here and how it works, and commit it with the bugfix.</p><p id="169ac280-fb4b-43e1-8b7e-d6c5dba374a6" class="">Anyway, the easiest bug is the one that does not occur. You put out the fire, now make your code fireproof.
-</p><h2 id="7018ffdd-afee-460d-9440-feda36d3d620" class=""><strong>19. Ensure the bug never comes back</strong></h2><p id="f4e064cd-4c92-4ccd-89d3-eafa90262af8" class="">
-Before doing anything to prevent a bug to come back, ask yourself why it happened in the first place. The causes are often the same: an unmanaged edgecase, a developer does not know how to use one of the tools, an abstraction is not representing the domain enough… In security you think of attack surface. Here, look at what is error prone. And it’s not always in the code.</p><p id="efa92ed6-8891-4a1a-b3f0-e4dd42a224ed" class=""><em>Disclaimer: each of the following parts needs its own article or book.</em></p><p id="ea209b69-c8c8-424d-a838-39630af84bf0" class=""><strong>Remove other occurrences</strong></p><p id="5ceabc85-60f5-48be-a345-c843554598d8" class="">If a misconception introduced the bug, there are chances the same mistake has been made somewhere else. Search the bad snippet and replace it with the good one. It’s not enough but it’s a good start.</p><p id="196fc15d-c4eb-4365-94ef-3049a64fc447" class=""><strong>Refactor</strong></p><p id="d828a852-45cb-4911-af9f-b8764be03183" class="">Good code is mistake-proof. Some people think &quot;no abstraction is better than bad abstraction&quot;. But both lead to bugs. Your job is to write good abstractions that last. So when a bug occurs, an engineer might have failed to bring such abstraction. Take the time to repair the broken parts. <a href="https://martinfowler.com/articles/is-quality-worth-cost.html">Investing in internal software quality leads to better external quality</a>.</p><p id="1aa06e7b-5705-4a86-bd95-0a63812914ee" class=""><strong>Add non regression testing</strong></p><p id="b889ff52-4bbb-4e93-92ba-52abb4354c58" class="">If you can’t eradicate the bug cause, at least make it impossible to reach your master branch or production again. Basically, write the right test suite which detects the failure and run it on every commit/pull request. The test must fail if you stash your patch.</p><p id="1fce9ebb-9dd5-4878-ac55-2552560ef6ff" class=""><strong>Write a standard</strong></p><p id="f1bc96b1-35d2-4bd7-b391-282209f03c1e" class="">You learned how to fix the bad with the good. But to share the good, it must be written somewhere. Write down the pitfalls, give examples of the wrong way and the right way to use a tool, and share it to your team.</p><p id="38e1121a-fcfd-45e6-91dc-ded9b9bcd6eb" class=""><strong>Train your team</strong></p><p id="f0db3b88-e58d-4303-aef2-20960c2b0726" class="">Reading a standard is not enough to fully learn a skill. Take time to present the standard and use it in a pair programming session next time a fellow developer has to code by practicing what you just wrote.</p><p id="1302e9b2-f732-4b2d-b6f0-49ca0fd9b3b5" class=""><strong>Automate the standard</strong></p><p id="7ada9d7b-a4a9-4875-b947-9b0be683a62d" class="">We can’t remember everything and the most error prone system in this chaos is our human selves. Automate good practices to reduce the risk of making mistakes. Use tools like code generation, declarative scripting, new linter rule...
-</p><h2 id="ffbb3db2-5bf2-4081-80f0-7a0ed7fa7c34" class=""><strong>20. Celebrate!</strong></h2><p id="0eef469c-6a64-4431-bf7f-b580d396b08b" class="">
-This bug is now definitely behind you. This is good, isn’t it?</p><p id="9df9a972-68a6-4b87-a740-3ff3637816cb" class="">To share this bliss, we encourage you to write down what happened and memorize it. War stories are always fun to tell, fun to hear. They are also a great way for others to remember obscure behaviors to look at when they have ruled out common hypotheses.</p><p id="633084bb-a98b-4061-9d75-636c4af8644f" class="">Now you’re ready to fight those bugs!</p><p id="edfce71b-7f93-4246-bc4d-dbd464b3e307" class="">
-</p><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="61c06532-6c74-48b9-a3e0-8b7aba8b4e7a"><div style="font-size:1.5em"><span class="icon">👤</span></div><div style="width:100%"><strong>Authors</strong>: <a href="https://blog.theodo.com/yann-jacquot/">Yann Jacquot</a> & <a href="https://twitter.com/RemyLuciani">Rémy Luciani</a></div></figure></div></article></body></html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>20 simple steps to debug anything</title>
+    <style>
+        /* webkit printing magic: print all background colors */
+        html {
+            -webkit-print-color-adjust: exact;
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-print-color-adjust: exact;
+        }
+
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        @media only screen {
+            body {
+                margin: 2em auto;
+                max-width: 900px;
+                color: rgb(55, 53, 47);
+            }
+        }
+
+        body {
+            line-height: 1.5;
+        }
+
+        a,
+        a.visited {
+            color: inherit;
+            text-decoration: underline;
+        }
+
+        .pdf-relative-link-path {
+            font-size: 80%;
+            color: #444;
+        }
+
+        h1,
+        h2,
+        h3 {
+            letter-spacing: -0.01em;
+            line-height: 1.2;
+            font-weight: 600;
+            margin-bottom: 0;
+        }
+
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-top: 0;
+            margin-bottom: 0.75em;
+        }
+
+        h1 {
+            font-size: 1.875rem;
+            margin-top: 1.875rem;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            margin-top: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        h3 {
+            font-size: 1.25rem;
+            margin-top: 1.25rem;
+        }
+
+        .source {
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            padding: 1.5em;
+            word-break: break-all;
+        }
+
+        .callout {
+            border-radius: 3px;
+            padding: 1rem;
+        }
+
+        figure {
+            margin: 1.25em 0;
+            page-break-inside: avoid;
+        }
+
+        figcaption {
+            opacity: 0.5;
+            font-size: 85%;
+            margin-top: 0.5em;
+        }
+
+        mark {
+            background-color: transparent;
+        }
+
+        .indented {
+            padding-left: 1.5em;
+        }
+
+        hr {
+            background: transparent;
+            display: block;
+            width: 100%;
+            height: 1px;
+            visibility: visible;
+            border: none;
+            border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+        }
+
+        img {
+            max-width: 100%;
+        }
+
+        @media only print {
+            img {
+                max-height: 100vh;
+                object-fit: contain;
+            }
+        }
+
+        @page {
+            margin: 1in;
+        }
+
+        .collection-content {
+            font-size: 0.875rem;
+        }
+
+        .column-list {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .column {
+            padding: 0 1em;
+        }
+
+        .column:first-child {
+            padding-left: 0;
+        }
+
+        .column:last-child {
+            padding-right: 0;
+        }
+
+        .table_of_contents-item {
+            display: block;
+            font-size: 0.875rem;
+            line-height: 1.3;
+            padding: 0.125rem;
+        }
+
+        .table_of_contents-indent-1 {
+            margin-left: 1.5rem;
+        }
+
+        .table_of_contents-indent-2 {
+            margin-left: 3rem;
+        }
+
+        .table_of_contents-indent-3 {
+            margin-left: 4.5rem;
+        }
+
+        .table_of_contents-link {
+            text-decoration: none;
+            opacity: 0.7;
+            border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+        }
+
+        table,
+        th,
+        td {
+            border: 1px solid rgba(55, 53, 47, 0.09);
+            border-collapse: collapse;
+        }
+
+        table {
+            border-left: none;
+            border-right: none;
+        }
+
+        th,
+        td {
+            font-weight: normal;
+            padding: 0.25em 0.5em;
+            line-height: 1.5;
+            min-height: 1.5em;
+            text-align: left;
+        }
+
+        th {
+            color: rgba(55, 53, 47, 0.6);
+        }
+
+        ol,
+        ul {
+            margin: 0;
+            margin-block-start: 0.6em;
+            margin-block-end: 0.6em;
+        }
+
+        li > ol:first-child,
+        li > ul:first-child {
+            margin-block-start: 0.6em;
+        }
+
+        ul > li {
+            list-style: disc;
+        }
+
+        ul.to-do-list {
+            text-indent: -1.7em;
+        }
+
+        ul.to-do-list > li {
+            list-style: none;
+        }
+
+        .to-do-children-checked {
+            text-decoration: line-through;
+            opacity: 0.375;
+        }
+
+        ul.toggle > li {
+            list-style: none;
+        }
+
+        ul {
+            padding-inline-start: 1.7em;
+        }
+
+        ul > li {
+            padding-left: 0.1em;
+        }
+
+        ol {
+            padding-inline-start: 1.6em;
+        }
+
+        ol > li {
+            padding-left: 0.2em;
+        }
+
+        .mono ol {
+            padding-inline-start: 2em;
+        }
+
+        .mono ol > li {
+            text-indent: -0.4em;
+        }
+
+        .toggle {
+            padding-inline-start: 0em;
+            list-style-type: none;
+        }
+
+        /* Indent toggle children */
+        .toggle > li > details {
+            padding-left: 1.7em;
+        }
+
+        .toggle > li > details > summary {
+            margin-left: -1.1em;
+        }
+
+        .selected-value {
+            display: inline-block;
+            padding: 0 0.5em;
+            background: rgba(206, 205, 202, 0.5);
+            border-radius: 3px;
+            margin-right: 0.5em;
+            margin-top: 0.3em;
+            margin-bottom: 0.3em;
+            white-space: nowrap;
+        }
+
+        .collection-title {
+            display: inline-block;
+            margin-right: 1em;
+        }
+
+        time {
+            opacity: 0.5;
+        }
+
+        .icon {
+            display: inline-block;
+            max-width: 1.2em;
+            max-height: 1.2em;
+            text-decoration: none;
+            vertical-align: text-bottom;
+            margin-right: 0.5em;
+        }
+
+        img.icon {
+            border-radius: 3px;
+        }
+
+        .user-icon {
+            width: 1.5em;
+            height: 1.5em;
+            border-radius: 100%;
+            margin-right: 0.5rem;
+        }
+
+        .user-icon-inner {
+            font-size: 0.8em;
+        }
+
+        .text-icon {
+            border: 1px solid #000;
+            text-align: center;
+        }
+
+        .page-cover-image {
+            display: block;
+            object-fit: cover;
+            width: 100%;
+            height: 30vh;
+        }
+
+        .page-header-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .page-header-icon-with-cover {
+            margin-top: -0.72em;
+            margin-left: 0.07em;
+        }
+
+        .page-header-icon img {
+            border-radius: 3px;
+        }
+
+        .link-to-page {
+            margin: 1em 0;
+            padding: 0;
+            border: none;
+            font-weight: 500;
+        }
+
+        p > .user {
+            opacity: 0.5;
+        }
+
+        td > .user,
+        td > time {
+            white-space: nowrap;
+        }
+
+        input[type="checkbox"] {
+            transform: scale(1.5);
+            margin-right: 0.6em;
+            vertical-align: middle;
+        }
+
+        p {
+            margin-top: 0.5em;
+            margin-bottom: 0.5em;
+        }
+
+        .image {
+            border: none;
+            margin: 1.5em 0;
+            padding: 0;
+            border-radius: 0;
+            text-align: center;
+        }
+
+        .code,
+        code {
+            background: rgba(135, 131, 120, 0.15);
+            border-radius: 3px;
+            padding: 0.2em 0.4em;
+            border-radius: 3px;
+            font-size: 85%;
+            tab-size: 2;
+        }
+
+        code {
+            color: #eb5757;
+        }
+
+        .code {
+            padding: 1.5em 1em;
+        }
+
+        .code-wrap {
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+
+        .code > code {
+            background: none;
+            padding: 0;
+            font-size: 100%;
+            color: inherit;
+        }
+
+        blockquote {
+            font-size: 1.25em;
+            margin: 1em 0;
+            padding-left: 1em;
+            border-left: 3px solid rgb(55, 53, 47);
+        }
+
+        .bookmark {
+            text-decoration: none;
+            max-height: 8em;
+            padding: 0;
+            display: flex;
+            width: 100%;
+            align-items: stretch;
+        }
+
+        .bookmark-title {
+            font-size: 0.85em;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            height: 1.75em;
+            white-space: nowrap;
+        }
+
+        .bookmark-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .bookmark-info {
+            flex: 4 1 180px;
+            padding: 12px 14px 14px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .bookmark-image {
+            width: 33%;
+            flex: 1 1 180px;
+            display: block;
+            position: relative;
+            object-fit: cover;
+            border-radius: 1px;
+        }
+
+        .bookmark-description {
+            color: rgba(55, 53, 47, 0.6);
+            font-size: 0.75em;
+            overflow: hidden;
+            max-height: 4.5em;
+            word-break: break-word;
+        }
+
+        .bookmark-href {
+            font-size: 0.75em;
+            margin-top: 0.25em;
+        }
+
+        .sans {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol";
+        }
+
+        .code {
+            font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+        }
+
+        .serif {
+            font-family: Lyon-Text, Georgia, YuMincho, "Yu Mincho", "Hiragino Mincho ProN", "Hiragino Mincho Pro", "Songti TC", "Songti SC", "SimSun", "Nanum Myeongjo", NanumMyeongjo, Batang, serif;
+        }
+
+        .mono {
+            font-family: iawriter-mono, Nitti, Menlo, Courier, monospace;
+        }
+
+        .pdf .sans {
+            font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC', 'Noto Sans CJK KR';
+        }
+
+        .pdf .code {
+            font-family: Source Code Pro, "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC', 'Noto Sans Mono CJK KR';
+        }
+
+        .pdf .serif {
+            font-family: PT Serif, Lyon-Text, Georgia, YuMincho, "Yu Mincho", "Hiragino Mincho ProN", "Hiragino Mincho Pro", "Songti TC", "Songti SC", "SimSun", "Nanum Myeongjo", NanumMyeongjo, Batang, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC', 'Noto Sans CJK KR';
+        }
+
+        .pdf .mono {
+            font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC', 'Noto Sans Mono CJK KR';
+        }
+
+        .highlight-default {
+        }
+
+        .highlight-gray {
+            color: rgb(155, 154, 151);
+        }
+
+        .highlight-brown {
+            color: rgb(100, 71, 58);
+        }
+
+        .highlight-orange {
+            color: rgb(217, 115, 13);
+        }
+
+        .highlight-yellow {
+            color: rgb(223, 171, 1);
+        }
+
+        .highlight-teal {
+            color: rgb(15, 123, 108);
+        }
+
+        .highlight-blue {
+            color: rgb(11, 110, 153);
+        }
+
+        .highlight-purple {
+            color: rgb(105, 64, 165);
+        }
+
+        .highlight-pink {
+            color: rgb(173, 26, 114);
+        }
+
+        .highlight-red {
+            color: rgb(224, 62, 62);
+        }
+
+        .highlight-gray_background {
+            background: rgb(235, 236, 237);
+        }
+
+        .highlight-brown_background {
+            background: rgb(233, 229, 227);
+        }
+
+        .highlight-orange_background {
+            background: rgb(250, 235, 221);
+        }
+
+        .highlight-yellow_background {
+            background: rgb(251, 243, 219);
+        }
+
+        .highlight-teal_background {
+            background: rgb(221, 237, 234);
+        }
+
+        .highlight-blue_background {
+            background: rgb(221, 235, 241);
+        }
+
+        .highlight-purple_background {
+            background: rgb(234, 228, 242);
+        }
+
+        .highlight-pink_background {
+            background: rgb(244, 223, 235);
+        }
+
+        .highlight-red_background {
+            background: rgb(251, 228, 228);
+        }
+
+        .block-color-default {
+            color: inherit;
+            fill: inherit;
+        }
+
+        .block-color-gray {
+            color: rgba(55, 53, 47, 0.6);
+            fill: rgba(55, 53, 47, 0.6);
+        }
+
+        .block-color-brown {
+            color: rgb(100, 71, 58);
+            fill: rgb(100, 71, 58);
+        }
+
+        .block-color-orange {
+            color: rgb(217, 115, 13);
+            fill: rgb(217, 115, 13);
+        }
+
+        .block-color-yellow {
+            color: rgb(223, 171, 1);
+            fill: rgb(223, 171, 1);
+        }
+
+        .block-color-teal {
+            color: rgb(15, 123, 108);
+            fill: rgb(15, 123, 108);
+        }
+
+        .block-color-blue {
+            color: rgb(11, 110, 153);
+            fill: rgb(11, 110, 153);
+        }
+
+        .block-color-purple {
+            color: rgb(105, 64, 165);
+            fill: rgb(105, 64, 165);
+        }
+
+        .block-color-pink {
+            color: rgb(173, 26, 114);
+            fill: rgb(173, 26, 114);
+        }
+
+        .block-color-red {
+            color: rgb(224, 62, 62);
+            fill: rgb(224, 62, 62);
+        }
+
+        .block-color-gray_background {
+            background: rgb(235, 236, 237);
+        }
+
+        .block-color-brown_background {
+            background: rgb(233, 229, 227);
+        }
+
+        .block-color-orange_background {
+            background: rgb(250, 235, 221);
+        }
+
+        .block-color-yellow_background {
+            background: rgb(251, 243, 219);
+        }
+
+        .block-color-teal_background {
+            background: rgb(221, 237, 234);
+        }
+
+        .block-color-blue_background {
+            background: rgb(221, 235, 241);
+        }
+
+        .block-color-purple_background {
+            background: rgb(234, 228, 242);
+        }
+
+        .block-color-pink_background {
+            background: rgb(244, 223, 235);
+        }
+
+        .block-color-red_background {
+            background: rgb(251, 228, 228);
+        }
+
+        .select-value-color-default {
+            background-color: rgba(206, 205, 202, 0.5);
+        }
+
+        .select-value-color-gray {
+            background-color: rgba(155, 154, 151, 0.4);
+        }
+
+        .select-value-color-brown {
+            background-color: rgba(140, 46, 0, 0.2);
+        }
+
+        .select-value-color-orange {
+            background-color: rgba(245, 93, 0, 0.2);
+        }
+
+        .select-value-color-yellow {
+            background-color: rgba(233, 168, 0, 0.2);
+        }
+
+        .select-value-color-green {
+            background-color: rgba(0, 135, 107, 0.2);
+        }
+
+        .select-value-color-blue {
+            background-color: rgba(0, 120, 223, 0.2);
+        }
+
+        .select-value-color-purple {
+            background-color: rgba(103, 36, 222, 0.2);
+        }
+
+        .select-value-color-pink {
+            background-color: rgba(221, 0, 129, 0.2);
+        }
+
+        .select-value-color-red {
+            background-color: rgba(255, 0, 26, 0.2);
+        }
+
+        .checkbox {
+            display: inline-flex;
+            vertical-align: text-bottom;
+            width: 16;
+            height: 16;
+            background-size: 16px;
+            margin-left: 2px;
+            margin-right: 5px;
+        }
+
+        .checkbox-on {
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+        }
+
+        .checkbox-off {
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+        }
+
+    </style>
+</head>
+<body>
+<article class="page serif">
+    <header><h1 class="page-title">20 simple steps to debug anything</h1></header>
+    <div class="page-body">
+        <br>
+        <p>Debugging is an everyday task. Your webpack build failed locally? Debug it. Your CI failed? Debug it. You wrote some code and broke everything? Debug it. Bob from the marketing team called you because you MUST fix a bug into production right now? Debug it.</p>
+        <br>
+        <p>You want to learn how to debug? Be our guest.</p>
+        <h2><strong>1. Don&#x27;t panic</strong></h2>
+        <p>Keep a cool head, it makes the hard bugs simple and the impossible ones possible. So, if you struggle, remove your hand from the keyboard. Take a breath, get a glass of water. And go back to your seat.</p>
+        <h2><strong>2. SERIOUSLY, do NOT panic</strong></h2>
+        <p>Even if you have to debug your production server. Stress causes mistakes, mistakes cause more bugs, more bugs cause more stress.</p>
+        <p>As you will see later, debugging is a scientific process, so it is necessary to keep your head cool.</p>
+        <p>By the way... If your production is down, it&#x27;s time to roll back!</p>
+        <h2><strong>‌3. </strong><strong>Verify the bug is not actually a feature</strong></h2>
+        <p>As features and edge cases grow it becomes impossible for one developer to keep all this complexity in their head. You should spend the time to check the defect you are seeing is outside the expectations of the application.</p>
+        <h2><strong>4. Reproduce the error where it occurred</strong></h2>
+        <p>Don’t wait for the failure to reproduce by itself. Make it fail again as it was reported. If it was in production, don’t start by reproducing the failure locally: do it in production (unless it involves dropping your database). Don&#x27;t focus on making your staging data look like the production environment, you&#x27;ll waste time and be misled by the wrong bugs.</p>
+        <p>Bugs are scarcely random. Try as hard as possible to find a set of initial conditions and/or actions which lead to a deterministic way to reproduce the failure. It helps.</p>
+        <h2><strong>5. Use the </strong><strong>logs, Luke</strong></h2>
+        <p>If there is information about your bug, it’s in the logs. So, find the logs, and use them. “Where are they?” you may ask. Look at the docs or the config of your failing system and you’ll know.</p>
+        <p>Then, reproduce the error to see the logs in real time.</p>
+        <p>You must mentally bind the action producing the failure to a system reaction. Otherwise, you could be biased and take an error log for something unrelated to your problem.</p>
+        <p>No logs? Go to step 10.</p>
+        <h2><strong>6. Read the error message, from left to right, from top to bottom</strong></h2>
+        <p>An error is text. Read it like text. Don&#x27;t try to wild guess the cause by jumping right to the end of the stack trace. Being calm helps take the time to acknowledge the whole error message.</p>
+        <h2><strong>7. Read the error, again</strong></h2>
+        <p>The first time, you decipher. The second time, you understand.</p>
+        <h2><strong>8. Solve the bug</strong></h2>
+        <p>In most of the cases, the error message is crystal clear. And maybe the cause is trivial. Hence, interrogate the usual suspects: seek typos, verify you are not debugging the wrong server or the wrong git branch, ensure your libraries are up to date, clear your application cache, check your keyboard is actually plugged in your computer... And look at the last thing you changed before the failure (now you know why your teammates blame you when you push a 43874 line changes Pull Request).</p>
+        <p>You made a mistake. It happens. Fix it. And go to step 19. If it is actually a difficult bug, keep hope and go to the next step.</p>
+        <h2><strong>9. Search the error message online</strong></h2>
+        <p>Remember: you are not alone (unless you are coding in a weird language). Use your favorite search engine and search for your error. You might find a StackOverflow thread or a GitHub issue helping you to solve the bug you are facing. No results? Ask your team if someone has already encountered this bug.</p>
+        <p>Otherwise, move forward to the next step.</p>
+        <h2><strong>10. Setup a clean debugging workspace</strong></h2>
+        <p>You have eliminated the obvious causes, and the bug is not fixed yet? Brace yourselves, debugging is coming!</p>
+        <ul class="bulleted-list">
+            <li>Warn your team, you may spend some time on this and they should know. You also want them to keep you updated regarding your bug in case they encounter it in the wild.</li>
+            <li>Home sweet home, try to reproduce the bug on your local environment where it is the most comfortable place to debug. Setup your favorite debugger if it is not already done.</li>
+            <li>Even better, find the <em>smallest</em> set of actions/data that make your system fail deterministically and automate it to have the feedback loop as short as possible.</li>
+            <li>Fix the bugs you are aware of, they can mask what is really happening or even be sidekicks of your main bug.</li>
+            <li>Finally, prepare a place to log your debugging expedition. You&#x27;ll see later why it&#x27;s useful.</li>
+        </ul>
+        <h2><strong>11. Setup a clean debugging mindset</strong></h2>
+        <p>You reduced the noise in your tools, now you need to reduce it in your brain. Remember it is more a cognitive process rather than a technical one.</p>
+        <p>Doubt more than Descartes, especially your own assumptions. It’s rarely because of a Linux Kernel bug, face it. Remove your beliefs, you know the issue is not really random, you just don’t know when it is triggered. Unless you can prove it is true, replace your “<em>cannot</em>” with “<em>shouldn’t</em>”.</p>
+        <h2><strong>12. Create a model of your system</strong></h2>
+        <p>You have the tool, you have the mind, now you need the map.</p>
+        <p>Make a diagram of how your system is supposed to work, from one end to another, from your end user to the place where data is stored. Here you should see your frontend, your backend, the server and the cache systems between them, the data stores, every cog that is part of your machine. Display the way these parts communicate with one another. Be exhaustive, but not too precise. “All models are wrong, but some are useful” to quote George Box.</p>
+        <p>If you don’t have the knowledge to make that diagram, don’t go any further until you are able to do so, it is mandatory for your everyday job. Would you trust a mechanic to repair your car if they don’t know how the engine’s power is transmitted to the wheels?</p>
+        <h2><strong>13. Make educated guesses</strong></h2>
+        <p>Now you have a diagram of your system behaving correctly. You already know how to reproduce your bug, hopefully with an error message indicating what is wrong with your system.</p>
+        <p>By putting together your model, the facts and your experience, you should be able to formulate the most likely causes about what is going wrong. Jot them down your notes.</p>
+        <p>If you only have weird patterns and coincidences instead of a deterministic way to reproduce your bug in step 4, don’t be carried away by them. For instance, an error happening only at certain periods of time can be linked to the ongoing traffic on your server or a cron.</p>
+        <h2><strong>14. Run and devise an experiment</strong></h2>
+        <p>Here, we want to confirm or refute our previous hypotheses, as fast as possible. Yes, this is the step where we have to talk about dichotomy.</p>
+        <p>Choose one of your hypotheses and start from there. If you think the issue comes from the call to your DB, don’t bother looking into your frontend code. Put a debugger breakpoint straight at the suspicious SQL query building.</p>
+        <p>You think the bug is in the code? Don’t read all the code. Checkout another branch and see if it still fails. The bug is merged on master for a while and you don’t know where to look? Learn how to use <a href="https://git-scm.com/docs/git-bisect">git-bisect</a>, now. Then, find the faulty commit in no time and reduce the number of lines of code to explore.</p>
+        <p>Verify your hypotheses one after each other (remember humans are not well wired for parallel computing). Strike out the wrong ones on the list you previously wrote.</p>
+        <p>For each experiment, write down the cause you wanted to assess, what you did, in what order, and what happened as a result. It will ensure you are not doing wild guesses and give you material in case of backtracking or if you ask for help.</p>
+        <p>If you have not found the cause of the bug yet, you are likely closer than you think. You might have hypotheses that you do not know how to test yet. Or you remain stuck in a part of your system and are still looking for a path to reach the bedrock. So, prepare to dive.</p>
+        <h2><strong>15. We need to go deeper</strong><strong></strong></h2>
+        <p>The model built previously was good enough to approach the bug cause but not to touch it. Because you can’t reason about something you don’t perceive, refine the model to sharpen your sight of the problem.</p>
+        <p>Most of the time the obstacle lies at a system boundary, like a function from a vendor library, an API provided by another team or even two modules inside your own software. So here are some ideas to scout through the fog:</p>
+        <ul class="bulleted-list">
+            <li><strong>Read the manual.</strong> Even if it looks big, the manual contains knowledge about how to use your vendor. Sometimes, you have to stop looking at your code to find the truth. And when the docs is really good, it provides you the small details that are actually very important for your issue. <em>Disclaimer: read manuals the same way you read your error logs</em>. ;-]</li>
+            <li><strong>Read your libraries source code.</strong> Don’t be afraid even if it is not <em>your code</em>, it’s still code. You are able to read it. Understand it might take more time because libraries have their own internal idioms. It will lead you closer to the bug cause. And make you a better developer.</li>
+            <li><strong>Look at the signal.</strong> If the problem happens between two nodes, the information you need to observe is on the wire. Learn how to read a <a href="https://www.tcpdump.org/manpages/tcpdump.1.html">tcpdump</a>/<a href="https://www.wireshark.org/">wireshark</a> trace. Follow your data with a debugger. Look at what your garbage collector keeps in the heap to understand a memory leak. Unravel your hanging process thanks to <a href="https://strace.io/">strace</a>. And don’t trust your understanding of the ORM you use, read the generated SQL query and execute it by yourself.</li>
+            <li><strong>Know your concurrency fundamentals.</strong> Deadlocks, live locks, shared memory, race conditions… Those are the worst and unless your software runtime includes a race detector, you need to use 100% of your brain to get rid of concurrency bugs. They deserve their own article.</li>
+        </ul>
+        <p>In any case, search for depth. Don’t go halfway to learn something new or your intuition will add more fog. Educated guesses are for mastered topics.</p>
+        <p>If you are not able to delve anymore, don’t get lost in limbo. Tag a partner!</p>
+        <h2><strong>16. Ask for help</strong></h2>
+        <p>You’ve dug as much as you could and still cannot pinpoint what’s wrong? That can happen, it’s okay, we are fallible beings.</p>
+        <p>You may have not seen the smoking gun because you are not lucid anymore. Sometimes all you need is to take a step back, and that can be offered by something as simple as <a href="https://en.wikipedia.org/wiki/Rubber_duck_debugging">a rubber duck</a>.</p>
+        <p>If the duck doesn’t make the cut, set aside your ego and your shyness to ask for help from a fellow developer. Search first for an expert in the area you are investigating, but any help is welcome here.</p>
+        <p>Thanks to your debug log, present to them your debugging process. State all the facts, even the weird ones and keep away any results from your inductive reasoning as you do not want to influence them.</p>
+        <p>If the bug is still there after you’ve consulted every person likely to help in your team or surrounding ones, go online. Post a small portion of your code that can exhibit your problem. Describe how to reproduce your bug and ask politely for help. People like puzzles, are eager to help and will collaborate to find a solution. <a href="https://stackexchange.com/sites">70% of StackOverflow and 78% of ServerFault questions have at least one answer with upvotes</a>.</p>
+        <p>You have cast your hook to the water, now wait for the help to bite and give you a fix to try.</p>
+        <h2><strong>17. Ensure </strong><em><strong>this</strong></em><strong> failure is fixed</strong></h2>
+        <p>Here, we suppose you have found something that made your bug disappear.</p>
+        <p>Software engineering is <em>mostly</em> deterministic: you must have done something. A bug cannot simply vanish in the air. (If it happened don&#x27;t celebrate and go back to step 10 instead.)</p>
+        <p>Assess your fix with the same scientific mindset as before:</p>
+        <ul class="bulleted-list">
+            <li>Keep only what you think is necessary for your fix to work.</li>
+            <li>Use the test from the step 10 to check that the bug is gone with the fix.</li>
+            <li>Remove the fix and use the same test to check that the bug is back.</li>
+        </ul>
+        <p>If the fix doesn’t pass this test, the two main hypotheses are that:</p>
+        <ul class="bulleted-list">
+            <li>Your fix is incomplete and need other changes made during the process. Something considered unnecessary might be required.</li>
+            <li>You had a lapse in concentration, your fix never really worked.</li>
+        </ul>
+        <p>In both cases, use this new data to refine your understanding of the problem and go back to step 13. Stay strong, you’re closing in!</p>
+        <p>If the fix passes the previous test, good job, the bug is dead!</p>
+        <h2><strong>18. Make it easier next time</strong></h2>
+        <p><em>This</em> bug is dead. But:</p>
+        <ol class="numbered-list" start="1">
+            <li>It could have been a trivial bug solved at step 8.</li>
+            <li>Bugs have friends.</li>
+        </ol>
+        <p>Face it, software engineers spend more time understanding why things do not work as intended than coding features. If you reduce the time to debug issues, you will coincidentally increase the time where you are creating value instead of repairing it.</p>
+        <p>Keep all the things you added into the codebase you wish you had at the beginning of your bug quest: log messages at debug levels with input/output values, HTTP status code respecting the RFC semantics, an actual crash in a previously silent catch block...</p>
+        <p>The same goes for tool created to investigate your problem, don’t discard it. Document why it’s here and how it works, and commit it with the bugfix.</p>
+        <p>Anyway, the easiest bug is the one that does not occur. You put out the fire, now make your code fireproof.</p>
+        <h2><strong>19. Ensure the bug never comes back</strong></h2>
+        <p>Before doing anything to prevent a bug to come back, ask yourself why it happened in the first place. The causes are often the same: an unmanaged edgecase, a developer does not know how to use one of the tools, an abstraction is not representing the domain enough… In security you think of attack surface. Here, look at what is error prone. And it’s not always in the code.</p>
+        <p><em>Disclaimer: each of the following parts needs its own article or book.</em></p>
+        <p><strong>Remove other occurrences</strong></p>
+        <p>If a misconception introduced the bug, there are chances the same mistake has been made somewhere else. Search the bad snippet and replace it with the good one. It’s not enough but it’s a good start.</p>
+        <p><strong>Refactor</strong></p>
+        <p>Good code is mistake-proof. Some people think &quot;no abstraction is better than bad abstraction&quot;. But both lead to bugs. Your job is to write good abstractions that last. So when a bug occurs, an engineer might have failed to bring such abstraction. Take the time to repair the broken parts. <a href="https://martinfowler.com/articles/is-quality-worth-cost.html">Investing in internal software quality leads to better external quality</a>.</p>
+        <p><strong>Add non regression testing</strong></p>
+        <p>If you can’t eradicate the bug cause, at least make it impossible to reach your master branch or production again. Basically, write the right test suite which detects the failure and run it on every commit/pull request. The test must fail if you stash your patch.</p>
+        <p><strong>Write a standard</strong></p>
+        <p>You learned how to fix the bad with the good. But to share the good, it must be written somewhere. Write down the pitfalls, give examples of the wrong way and the right way to use a tool, and share it to your team.</p>
+        <p><strong>Train your team</strong></p>
+        <p>Reading a standard is not enough to fully learn a skill. Take time to present the standard and use it in a pair programming session next time a fellow developer has to code by practicing what you just wrote.</p>
+        <p><strong>Automate the standard</strong></p>
+        <p>We can’t remember everything and the most error prone system in this chaos is our human selves. Automate good practices to reduce the risk of making mistakes. Use tools like code generation, declarative scripting, new linter rule...</p>
+        <h2><strong>20. Celebrate!</strong></h2>
+        <p>This bug is now definitely behind you. This is good, isn’t it?</p>
+        <p>To share this bliss, we encourage you to write down what happened and memorize it. War stories are always fun to tell, fun to hear. They are also a great way for others to remember obscure behaviors to look at when they have ruled out common hypotheses.</p>
+        <p>Now you’re ready to fight those bugs!</p>
+        <figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex"
+        >
+            <div style="font-size:1.5em"><span class="icon">👤</span></div>
+            <div style="width:100%"><strong>Authors</strong>: <a href="https://blog.theodo.com/yann-jacquot/">Yann Jacquot</a> & <a href="https://twitter.com/RemyLuciani">Rémy Luciani</a></div>
+        </figure>
+    </div>
+</article>
+</body>
+</html>
